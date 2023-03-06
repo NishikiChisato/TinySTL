@@ -122,9 +122,9 @@ private:
                                         //配置一大块区域，理想情况为n个size的空间，n可用改变
     static void* chunk_alloc(size_t, int&);
 
-    static char* memory_start;          //起始地址
-    static char* memory_end;            //结束地址
-    static size_t memory_size;          //堆栈大小
+    static char* memory_start;          //memory pool 起始地址
+    static char* memory_end;            //memory pool 结束地址
+    static size_t memory_size;          //memory pool 堆栈大小
 
 public:
     static void* allocate(size_t);
