@@ -4,9 +4,12 @@
 
 int main()
 {
-    malloc_alloc al;
-    void * p = al.allocate(10);
-    *(int*)p = 5;
-    std::cout << *(int*)p << std::endl;
+    mystl::alloc al;
+    int * p = static_cast<int*>(al.allocate(10 * 4));
+    for(int i = 0; i < 10; i ++)
+        *(p + i) = i;
+    for(int i = 0; i < 10; i ++)
+        std::cout << *(p +i) << " ";
+    std::cout << std::endl;
     return 0;
 }

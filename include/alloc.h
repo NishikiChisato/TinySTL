@@ -27,7 +27,7 @@ public:
     static void (*set_malloc_alloc_handler(void (*f)()))();
 
 private:
-    // 处理out of memory函数
+    //处理out of memory
     static void *oom_allocate(size_t);
     static void *oom_reallocate(void *, size_t);
     static void (*__malloc_alloc_oom_handler)();
@@ -37,7 +37,7 @@ void (*__malloc_alloc::__malloc_alloc_oom_handler)() = nullptr;
 
 void *__malloc_alloc::allocate(size_t n)
 {
-    void *res = malloc(n);
+    void *res = std::malloc(n);
     if (res == nullptr)
         res = oom_allocate(n);
     return res;
@@ -46,7 +46,7 @@ void *__malloc_alloc::allocate(size_t n)
 //该函数中的old_size无效
 void *__malloc_alloc::reallocate(void *p, size_t /*old_size*/ , size_t new_size)
 {
-    void *res = realloc(p, new_size);
+    void *res = std::realloc(p, new_size);
     if (res == nullptr)
         res = oom_reallocate(p, new_size);
     return res;
@@ -55,7 +55,7 @@ void *__malloc_alloc::reallocate(void *p, size_t /*old_size*/ , size_t new_size)
 //释放大小为n的空间，n同样无效
 void __malloc_alloc::deallocate(void *p, size_t n)
 {
-    free(p);
+    std::free(p);
 }
 
 void (*__malloc_alloc::set_malloc_alloc_handler(void (*f)()))()
@@ -231,10 +231,75 @@ void* __default_alloc::refill(size_t n)
     return res;
 }
 
+//分配cnt_chunk个size大小的区块
 void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
 {
-
+    char* res = nullptr;
+    size_t left_bytes = memory_end - memory_start;
+    size_t total_bytes = size * cnt_chunk;
+    if(left_bytes >= total_bytes)
+    {
+        //memory pool 剩余空间足够
+        res = memory_start;
+        memory_size += total_bytes;
+        return res;
+    }
+    else if(left_bytes >= size)
+    {
+        //memory pool 中的空间足够至少分配一个区块
+        //cnt_chunk只在本部分才会被修改，用于协助后面递归调用对cnt_chunk的修正
+        cnt_chunk = left_bytes / size;
+        res = memory_start;
+        memory_start += cnt_chunk * size;
+        return res;
+    }
+    else
+    {
+        //memory pool 中空间不足以分配一个区块
+        //先将memory pool 中的空间配置给free list
+        if(left_bytes > 0)
+        {
+            obj** my_free_list = free_list + FREELIST_INDEX(left_bytes);
+            obj* p = reinterpret_cast<obj*>(memory_start);
+            p->freelist_link = *my_free_list;
+            *my_free_list = p;
+        }
+        //分配两倍total_bytes加一个随分配次数而增加的附加量
+        //其中total_byte-1给free list，1个给客端，其余给memory pool
+        size_t bytes_get = 2 * total_bytes + ROUND_UP(memory_size >> 4);
+        memory_start = (char*)malloc(bytes_get);
+        if(nullptr == memory_start)
+        {
+            //分配失败的处理
+            //考虑将free list中的区块编入memory pool
+            obj** my_free_list = nullptr;
+            for(int i = size; i <= __MAX_BYTES; i += __ALIGN)
+            {
+                my_free_list = free_list + FREELIST_INDEX(i);
+                if(nullptr != *my_free_list)
+                {
+                    //将my_free_list指向下一个free list当中的小区块
+                    *my_free_list = (*my_free_list)->freelist_link;
+                    memory_start = reinterpret_cast<char*>(*my_free_list);
+                    memory_end = memory_start + i;
+                    //递归调用，修正cnt_chunk
+                    return chunk_alloc(size, cnt_chunk);
+                }
+            }
+            //free list中也无法再分配出一个区块
+            memory_end = nullptr;
+            //寄希望与一级配置器的oom_allocate函数，虽然会导致exception的抛出
+            memory_start = reinterpret_cast<char*>(malloc_alloc::allocate(size));
+        }
+        memory_end = memory_start + bytes_get;
+        memory_size += bytes_get;
+        //若分配成功，则表示memory pool中已得到新的空间
+        //递归调用本函数，修正cnt_chunk
+        return chunk_alloc(size, cnt_chunk);
+    }
 }
+
+typedef __default_alloc alloc;
 
 }
 
