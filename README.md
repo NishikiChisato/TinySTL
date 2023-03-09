@@ -7,4 +7,8 @@
 ## 目前进度
 
 * alloc.h的编写 —— 一二级配置器均完成，还差`uninitialized_copy, uninitialized_fill, uninitialized_n_fill`
-* 
+
+## 项目难点记录
+
+*  为什么 `iterator_traits` 需要使用 `Partial specialization`
+

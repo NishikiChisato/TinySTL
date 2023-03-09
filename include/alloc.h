@@ -44,7 +44,7 @@ void *__malloc_alloc::allocate(size_t n)
 }
 
 //该函数中的old_size无效
-void *__malloc_alloc::reallocate(void *p, size_t /*old_size*/ , size_t new_size)
+inline void *__malloc_alloc::reallocate(void *p, size_t /*old_size*/ , size_t new_size)
 {
     void *res = std::realloc(p, new_size);
     if (res == nullptr)
@@ -53,19 +53,19 @@ void *__malloc_alloc::reallocate(void *p, size_t /*old_size*/ , size_t new_size)
 }
 
 //释放大小为n的空间，n同样无效
-void __malloc_alloc::deallocate(void *p, size_t n)
+inline void __malloc_alloc::deallocate(void *p, size_t n)
 {
     std::free(p);
 }
 
-void (*__malloc_alloc::set_malloc_alloc_handler(void (*f)()))()
+inline void (*__malloc_alloc::set_malloc_alloc_handler(void (*f)()))()
 {
     void (*old)() = __malloc_alloc_oom_handler;
     __malloc_alloc_oom_handler = f;
     return old;
 }
 
-void* __malloc_alloc::oom_allocate(size_t n)
+inline void* __malloc_alloc::oom_allocate(size_t n)
 {
     void (* my_oom_handler)();
     void * res;
@@ -80,7 +80,7 @@ void* __malloc_alloc::oom_allocate(size_t n)
     }
 }
 
-void* __malloc_alloc::oom_reallocate(void *p, size_t n)
+inline void* __malloc_alloc::oom_reallocate(void *p, size_t n)
 {
     void (* my_oom_handler)();
     void *res;
@@ -145,17 +145,17 @@ __default_alloc::obj* __default_alloc::free_list[__NFREELISTS] = {
     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,nullptr, nullptr, nullptr, nullptr
     };
 
-size_t __default_alloc::ROUND_UP(size_t bytes)
+inline size_t __default_alloc::ROUND_UP(size_t bytes)
 {
     return (bytes + __ALIGN - 1) & ~(__ALIGN - 1);  //先向上进位，随后对后三位清零
 }
 
-size_t __default_alloc::FREELIST_INDEX(size_t size)   //sz 需要 >0
+inline size_t __default_alloc::FREELIST_INDEX(size_t size)   //sz 需要 >0
 {
     return (size + __ALIGN - 1) / __ALIGN - 1;        //下标从0开始
 }
 
-void* __default_alloc::allocate(size_t n)
+inline void* __default_alloc::allocate(size_t n)
 {
     if(n > static_cast<size_t>(__MAX_BYTES))
         return malloc_alloc::allocate(n);
@@ -174,14 +174,14 @@ void* __default_alloc::allocate(size_t n)
 }
 
 //回收大小为n的对象，小于__MAX_BYTES回归memory pool
-void __default_alloc::deallocate(void* p, size_t n)
+inline void __default_alloc::deallocate(void* p, size_t n)
 {
     if(n > static_cast<size_t>(__MAX_BYTES))
     {
         malloc_alloc::deallocate(p, n);
         return;
     }
-    obj** my_free_list;
+    obj** my_free_list = nullptr;
     obj* tmp = static_cast<obj*>(p);
     my_free_list = free_list + FREELIST_INDEX(n);
     tmp->freelist_link = *my_free_list;
@@ -189,7 +189,7 @@ void __default_alloc::deallocate(void* p, size_t n)
 }
 
 //重新分配p指针指向的空间，old_size为原空间大小，new_size为新空间大小
-void* __default_alloc::reallocate(void* p, size_t old_size, size_t new_size)
+inline void* __default_alloc::reallocate(void* p, size_t old_size, size_t new_size)
 {
     if(new_size > static_cast<size_t>(__MAX_BYTES))
         return malloc_alloc::reallocate(p, old_size, new_size);
@@ -205,7 +205,7 @@ void* __default_alloc::reallocate(void* p, size_t old_size, size_t new_size)
 }
 
 //n已上调为__ALIGN的倍数
-void* __default_alloc::refill(size_t n)
+inline void* __default_alloc::refill(size_t n)
 {
     int cnt_chunk = __CHUNK_COUNT;
     char* chunk = static_cast<char*>(chunk_alloc(n, cnt_chunk));
@@ -232,7 +232,7 @@ void* __default_alloc::refill(size_t n)
 }
 
 //分配cnt_chunk个size大小的区块
-void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
+inline void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
 {
     char* res = nullptr;
     size_t left_bytes = memory_end - memory_start;

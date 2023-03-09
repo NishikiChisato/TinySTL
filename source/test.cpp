@@ -11,5 +11,9 @@ int main()
     for(int i = 0; i < 10; i ++)
         std::cout << *(p +i) << " ";
     std::cout << std::endl;
+
+    al.deallocate(p, 40);
+    std::cout << "Success" << std::endl;
+
     return 0;
 }
