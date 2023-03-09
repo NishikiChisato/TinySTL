@@ -12,7 +12,7 @@ int main()
         std::cout << *(p +i) << " ";
     std::cout << std::endl;
 
-    al.deallocate(p, 40);
+    al.deallocate(p, 4 * 10);
     std::cout << "Success" << std::endl;
 
     return 0;

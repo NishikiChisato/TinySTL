@@ -204,13 +204,13 @@ inline void* __default_alloc::reallocate(void* p, size_t old_size, size_t new_si
     return res;
 }
 
-//n已上调为__ALIGN的倍数
+//n已上调为__ALIGN的倍数，返回大小为n的对象
 inline void* __default_alloc::refill(size_t n)
 {
     int cnt_chunk = __CHUNK_COUNT;
     char* chunk = static_cast<char*>(chunk_alloc(n, cnt_chunk));
     if(1 == cnt_chunk) return chunk;//如果只能分配一个节点，那么返回给客端，free list中无新增节点
-    obj** my_free_list = free_list + ROUND_UP(n);
+    obj** my_free_list = free_list + FREELIST_INDEX(n);
     obj* res = reinterpret_cast<obj*>(chunk);//第一块返还给客端
     obj* cur_ptr = nullptr, *next_ptr = nullptr;
     //将free list指向新开辟的空间
@@ -219,8 +219,8 @@ inline void* __default_alloc::refill(size_t n)
     for(int i = 1; ; i ++)
     {
         cur_ptr = next_ptr;
-        next_ptr = reinterpret_cast<obj*>(reinterpret_cast<char*>(next_ptr) + i * n);
-        if(cnt_chunk - 1 > i)
+        next_ptr = reinterpret_cast<obj*>(reinterpret_cast<char*>(next_ptr) + n);
+        if(cnt_chunk - 1 != i)
             cur_ptr->freelist_link = next_ptr;
         else
         {
@@ -265,7 +265,6 @@ inline void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
             *my_free_list = p;
         }
         //分配两倍total_bytes加一个随分配次数而增加的附加量
-        //其中total_byte-1给free list，1个给客端，其余给memory pool
         size_t bytes_get = 2 * total_bytes + ROUND_UP(memory_size >> 4);
         memory_start = (char*)malloc(bytes_get);
         if(nullptr == memory_start)
