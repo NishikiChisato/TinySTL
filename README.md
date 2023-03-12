@@ -6,9 +6,17 @@
 
 ## 目前进度
 
-* alloc.h的编写 —— 一二级配置器均完成，还差`uninitialized_copy, uninitialized_fill, uninitialized_n_fill`
+* `alloc.h`，还差`uninitialized_copy, uninitialized_fill, uninitialized_n_fill`
+  * 完成度 $80\%$
+* `iterator.h`与`type_traits.h`，还差反向迭代器`reverse_iterator`
+  * 完成度 $80\%$
 
 ## 项目难点记录
 
-*  为什么 `iterator_traits` 需要使用 `Partial specialization`
+*  为什么 `iterator_traits` 需要使用 `Partial Specialization`
 
+## 疑问
+
+* `iterator.h` 中的 `distance_type` 与 `value_type` 的返回值为什么是指针
+
+回答：迭代器所指对象型别为 `T` 的话，此处应当返回 `T*` 用以表示指向型别 `T` 的迭代器；除此之外，此函数的接口均接受 `T*` 型别的对象
