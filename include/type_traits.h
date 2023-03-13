@@ -1,5 +1,6 @@
-#ifndef __TYPE_TRAITS_H__
-#define __TYPE_TRAITS_H__
+#ifndef __MYSTL_TYPE_TRAITS_H__
+#define __MYSTL_TYPE_TRAITS_H__
+
 
 namespace mystl
 {

@@ -1,5 +1,17 @@
-#ifndef __ITERATOR_H__
-#define __ITERATOR_H__
+#ifndef __MYSTL_ITERATOR_H__
+#define __MYSTL_ITERATOR_H__
+
+
+/**
+ * @file iterator.h
+ * @author NishikiChisato
+ * @brief 萃取器相关定义
+ * @version 0.1
+ * @date 2023-03-14
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
 #include <cstddef>
 #include "type_traits.h"
