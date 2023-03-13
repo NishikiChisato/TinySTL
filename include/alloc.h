@@ -1,5 +1,5 @@
-#ifndef __MYSTL_ALLOC_
-#define __MYSTL_ALLOC_
+#ifndef __MYSTL_ALLOC_H__
+#define __MYSTL_ALLOC_H__
 
 #ifndef __THROW_BAD_ALLOC
 #include <iostream>
@@ -8,6 +8,17 @@
         exit(1)
 
 #endif
+
+/**
+ * @file alloc.h
+ * @author NishikiChisato
+ * @brief 负责空间的配置与释放
+ * @version 0.1
+ * @date 2023-03-14
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
 #include <cstddef>
 #include <cstdlib>
@@ -299,6 +310,16 @@ inline void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
 }
 
 typedef __default_alloc alloc;
+
+
+template <typename T, typename Alloc>
+class simple_alloc
+{
+public:
+    static T* allocate(size_t n == 1) { return 0 == n ? nullptr : static_cast<T*>(Alloc<T>::allocate(n * sizeof (T))); }
+    static void deallocate(T* p, size_t n == 1) { if(0 != n) Alloc<T>::deallocate(p, n * sizeof (T)); }
+};
+
 
 }
 
