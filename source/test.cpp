@@ -2,6 +2,8 @@
 
 #include "alloc.h"
 #include "iterator.h"
+#include "uninitialized.h"
+#include "construct.h"
 
 #include <vector>
 
@@ -12,6 +14,8 @@ void print(mystl::__true_type)
 
 int main()
 {
+
+#if 0
     print(mystl::__type_traits<int>::is_POD_type());
 
     std::vector<int>v = {1,2,3,4,5,6,7,8,9};
@@ -23,6 +27,10 @@ int main()
     mystl::advance(it, 2);
 
     std::cout << *it << std::endl;
+#endif
+
+    
+
 
     return 0;
 }
