@@ -6,10 +6,13 @@
 
 ## 目前进度
 
-* `alloc.h`，还差`uninitialized_copy, uninitialized_fill, uninitialized_n_fill`
-  * 完成度 `80%`
+* `alloc.h`，已完成
 * `iterator.h`与`type_traits.h`，还差反向迭代器`reverse_iterator`
   * 完成度 `80%`
+* `construct.h`，目前正在编写
+  * 完成度 `30%`
+* `uninitialized.h`，目前正在编写
+  * 完成度 `30%`
 
 ## 项目难点记录
 
