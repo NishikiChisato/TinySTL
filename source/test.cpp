@@ -29,7 +29,6 @@ int main()
     std::cout << *it << std::endl;
 #endif
 
-    
 
 
     return 0;

@@ -23,7 +23,7 @@ template <typename _Tp, typename T>
 inline void construct(_Tp* p, T value)
 {
     //调用placement new
-    std::new (p) T(value);
+    new (p) T(value);
 }
 
 template <typename T>
