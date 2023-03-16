@@ -1,7 +1,20 @@
 #ifndef __MYSTL_UNINITIALIZED_H__
 #define __MYSTL_UNINITIALIZED_H__
 
+/**
+ * @file uninitialized.h
+ * @author NishikiChisato (NishikiChisato@outlook.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-03-16
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
+
 #include "type_traits.h"
+#include "algobase.h"
 #include <cstring>
 
 namespace mystl
@@ -86,15 +99,16 @@ inline ForwardIterator
 __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator dest, mystl::__true_type)
 {
     //交由高阶算法批量执行
-    return mystl::copy(first, last, dest);
+    //return mystl::copy(first, last, dest);
+    ;
 }
 
 template <typename InputIterator, typename ForwardIterator, typename _Tp>
 inline ForwardIterator 
 __uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator dest, _Tp*)
 {
-    typedef typename mystl::__type_traits<T>::is_POD_type   is_POD;
-    return __uninitialized_copy_aux(first, last, dest, isPOD());
+    typedef typename mystl::__type_traits<_Tp>::is_POD_type   is_POD;
+    return __uninitialized_copy_aux(first, last, dest, is_POD());
 }
 
 template <typename InputIterator, typename ForwardIterator>
@@ -118,6 +132,51 @@ inline const wchar_t* uninitialized_copy(const wchar_t* first, const wchar_t* la
     return dest + (last - first);
 }
 
+
+//以下为整组 uninitialized_fill 函数的实现
+
+
+template <typename ForwardIterator, typename T>
+inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T& val, mystl::__true_type)
+{
+    mystl::fill(first, last, val);
+}
+
+template <typename ForwardIterator, typename T>
+inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last, const T& val, mystl::__false_type)
+{
+    ForwardIterator cur = first;
+    try
+    {
+        while(cur < last)
+        {
+            mystl::construct(cur, val);
+            ++cur;
+        }
+    }
+    catch(...)
+    {
+        while(first < cur) 
+        {
+            mystl::destory(first);
+            ++first;
+        }
+    }
+    
+}
+
+template <typename ForwardIterator, typename T, typename _Tp>
+inline void __uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& val, _Tp*)
+{
+    typedef typename mystl::__type_traits<_Tp>::is_POD_type   is_POD;
+    __uninitialized_fill_aux(first, last, val, is_POD());
+}
+
+template <typename ForwardIterator, typename T>
+inline void uninitialized_fill(ForwardIterator first, ForwardIterator last, const T& val)
+{
+    __uninitialized_fill(first, last, val, value_type(first));
+}
 
 
 
