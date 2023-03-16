@@ -29,6 +29,25 @@ int main()
     std::cout << *it << std::endl;
 #endif
 
+#if 0
+    std::vector<int>iv(5);
+    mystl::uninitialized_fill_n(iv.begin(), 5, 10);
+
+    std::cout << iv.size() << std::endl;
+
+    for(auto x : iv)
+        std::cout << x << " ";
+    std::cout << std::endl;
+
+    std::vector<int>ic(5);
+
+    mystl::uninitialized_fill(ic.begin(), ic.end(), 6);
+
+    for(auto x : ic)
+        std::cout << x << " ";
+
+    std::cout << std::endl;
+#endif
 
 
     return 0;
