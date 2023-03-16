@@ -6,17 +6,25 @@
 
 ## 目前进度
 
-* `alloc.h`，已完成
-* `iterator.h`与`type_traits.h`，还差反向迭代器`reverse_iterator`
+* `alloc.h`，目前已结束
+
+* `iterator.h`，还差反向迭代器`reverse_iterator`
   * 完成度 `80%`
-* `construct.h`，目前正在编写
-  * 完成度 `30%`
-* `uninitialized.h`，目前正在编写
-  * 完成度 `30%`
+
+* `type_trait.h`，目前已结束
+
+* `construct.h`，目前已结束
+
+* `uninitialized.h`，目前已结束
+
+* `algobase.h`，只有基础函数部分
+  * 完成度 `5%`
 
 ## 项目难点记录
 
-*  为什么 `iterator_traits` 需要使用 `Partial Specialization`
+*  `iterator_traits` 需要针对不同类型使用 `Partial Specialization` 
+
+*  `copy` 定义中针对不同场景的 `generalization`, `specialization`, `refinement`
 
 ## 疑问
 
