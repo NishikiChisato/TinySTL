@@ -4,10 +4,10 @@
 
 /**
  * @file iterator.h
- * @author NishikiChisato
- * @brief 萃取器相关定义
+ * @author NishikiChisato (NishikiChisato@outlook.com)
+ * @brief 
  * @version 0.1
- * @date 2023-03-14
+ * @date 2023-03-16
  * 
  * @copyright Copyright (c) 2023
  * 
