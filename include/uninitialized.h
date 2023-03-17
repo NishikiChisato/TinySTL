@@ -39,6 +39,7 @@ __uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& x, __false_ty
     {
         for(; first != cur; ++first)
             destory(first);
+        throw;
     }
     return cur;//返回最后一个元素的下一个位置的迭代器
 }
@@ -90,6 +91,7 @@ __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterato
             mystl::destory(dest);
             ++dest;
         }
+        throw;
     }
     return p2;
 }
@@ -161,6 +163,7 @@ inline void __uninitialized_fill_aux(ForwardIterator first, ForwardIterator last
             mystl::destory(first);
             ++first;
         }
+        throw;
     }
     
 }

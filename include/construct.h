@@ -51,7 +51,7 @@ template <typename ForwardIterator>
 inline void destory(ForwardIterator first, ForwardIterator last)
 {
     __destory(first, last, typename mystl::__type_traits<
-             typename iterator_traits<ForwardIterator>::iterator_category>::has_trivial_destructor());
+             typename iterator_traits<ForwardIterator>::value_type>::has_trivial_destructor());
 }
 
 
