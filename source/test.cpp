@@ -39,7 +39,16 @@ int main()
 
 
 
+    int* pt = new int[5];
 
+    for(int i = 0; i <5; i ++)
+        pt[i] = i;
+    
+    for(int i = 0; i <5; i ++)
+        std::cout << i << " ";
+    std::cout << std::endl;
+
+    mystl::destory(pt, pt + 5);
 
 
 
