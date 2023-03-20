@@ -23,7 +23,13 @@ template <typename _Tp, typename T>
 inline void construct(_Tp* p, T value)
 {
     //调用placement new
-    new (p) T(value);
+    new ((void*)p) T(value);
+}
+
+template <typename _Tp>
+inline void construct(_Tp* p)
+{
+    new ((void*)p) _Tp();
 }
 
 template <typename T>
@@ -39,12 +45,8 @@ inline void __destory(ForwardIterator first, ForwardIterator last, __true_type) 
 template <typename ForwardIterator>
 inline void __destory(ForwardIterator first, ForwardIterator last, __false_type) 
 {
-    ForwardIterator cur = first;
-    while(cur < last)
-    {
-        destory(cur);
-        ++cur;
-    }
+    for( ; first < last; ++first)
+        destory(&*first);
 }
 
 template <typename ForwardIterator>
@@ -55,11 +57,15 @@ inline void destory(ForwardIterator first, ForwardIterator last)
 }
 
 
+//对于内置数据类型不需要析构
 
-
-
-
-
+inline void destory(char*, char*) {  };
+inline void destory(int*, int*) {  };
+inline void destory(short*, short*) {  };
+inline void destory(long*, long*) {  };
+inline void destory(long long*, long long*) {  };
+inline void destory(float*, float*) {  };
+inline void destory(double*, double*) {  };
 
 
 
