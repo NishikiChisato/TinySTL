@@ -166,6 +166,7 @@ inline size_t __default_alloc::FREELIST_INDEX(size_t size)   //sz 需要 >0
     return (size + __ALIGN - 1) / __ALIGN - 1;        //下标从0开始
 }
 
+//分配大小为n的空间
 inline void* __default_alloc::allocate(size_t n)
 {
     if(n > static_cast<size_t>(__MAX_BYTES))
@@ -252,7 +253,7 @@ inline void* __default_alloc::chunk_alloc(size_t size, int& cnt_chunk)
     {
         //memory pool 剩余空间足够
         res = memory_start;
-        memory_size += total_bytes;
+        memory_start += total_bytes;
         return res;
     }
     else if(left_bytes >= size)
