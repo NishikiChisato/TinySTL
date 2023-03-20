@@ -5,53 +5,43 @@
 #include "uninitialized.h"
 #include "construct.h"
 
-#include <vector>
+#include "vector.h"
 
 void print(mystl::__true_type)
 {
     std::cout << "YES" << std::endl;
 }
 
+void print(mystl::vector<int>& iv)
+{
+    for(auto x :iv) std::cout << x << std::endl;
+    std::cout << std::endl;    
+}
+
+
 int main()
 {
 
-#if 0
-    print(mystl::__type_traits<int>::is_POD_type());
 
-    std::vector<int>v = {1,2,3,4,5,6,7,8,9};
+    mystl::vector<int>iv(2, 1);
 
-    std::vector<int>::iterator it = v.begin();
+    print(iv);
 
-    std::cout << *it << std::endl;
+    iv.push_back(2);
 
-    mystl::advance(it, 2);
+    print(iv);
 
-    std::cout << *it << std::endl;
-#endif
+    iv.push_back(3);
 
-#if 0
-    std::vector<int>iv(5);
-    mystl::uninitialized_fill_n(iv.begin(), 5, 10);
+    print(iv);
 
-    std::cout << iv.size() << std::endl;
+    iv.pop_back();
 
-    for(auto x : iv)
-        std::cout << x << " ";
-    std::cout << std::endl;
 
-    std::vector<int>ic(5);
 
-    mystl::uninitialized_fill(ic.begin(), ic.end(), 6);
 
-    for(auto x : ic)
-        std::cout << x << " ";
 
-    std::cout << std::endl;
-#endif
-    
 
-    std::vector<int> iv;
-    
 
     return 0;
 }
