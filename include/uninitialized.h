@@ -31,14 +31,13 @@ __uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& x, __false_ty
     {
         while(n--)
         {
-            construct(cur, x);
+            construct(&*cur, x);
             ++cur;
         }
     }
     catch(...)
     {
-        for(; first != cur; ++first)
-            destory(first);
+        mystl::destory(first, cur);
         throw;
     }
     return cur;//返回最后一个元素的下一个位置的迭代器
@@ -80,17 +79,13 @@ __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterato
     {
         while(p1 < last)
         {
-            mystl::construct(p2, *p1);
+            mystl::construct(&*p2, *p1);
             ++p2, ++p1;
         }
     }
     catch(...)
     {
-        while(dest < p2)
-        {
-            mystl::destory(dest);
-            ++dest;
-        }
+        mystl::destory(dest, p2);
         throw;
     }
     return p2;
@@ -101,8 +96,7 @@ inline ForwardIterator
 __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator dest, mystl::__true_type)
 {
     //交由高阶算法批量执行
-    //return mystl::copy(first, last, dest);
-    ;
+    return mystl::copy(first, last, dest);
 }
 
 template <typename InputIterator, typename ForwardIterator, typename _Tp>
